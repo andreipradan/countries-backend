@@ -136,8 +136,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-sentry_sdk.init(
-    dsn=os.environ["SENTRY_DSN"],
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-)
+if not DEBUG:
+    sentry_sdk.init(
+        dsn=os.environ["SENTRY_DSN"],
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+    )
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "auth.authentication.ExpiringTokenAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+}
