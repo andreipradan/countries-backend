@@ -8,6 +8,6 @@ RUN pip install --no-cache-dir -r /temp_requirements/requirements.txt \
     && rm -rf /temp_requirements/
 
 WORKDIR /app
-COPY src .
+COPY backend .
 
-CMD exec gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT --chdir=/app
+CMD exec gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --chdir=/app
