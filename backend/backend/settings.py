@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # custom
     'rest_framework',
+    'corsheaders',
     # local
     'api',
     'auth',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,3 +152,11 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = [
+    "https://countries.pradan.dev",
+]
+CORS_ORIGIN_WHITELIST_ENV = os.getenv("CORS_ORIGIN_WHITELIST")
+if CORS_ORIGIN_WHITELIST_ENV:
+    CORS_ORIGIN_WHITELIST += CORS_ORIGIN_WHITELIST_ENV.split(',')

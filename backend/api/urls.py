@@ -4,5 +4,5 @@ from .views import APILogin
 
 
 urlpatterns = [
-    path('login', APILogin.as_view()),
+    path('login/', APILogin.as_view()),
 ]
