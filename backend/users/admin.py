@@ -43,7 +43,7 @@ class UserAdmin(auth_admin.UserAdmin):
             },
         ),
     )
-    list_display = ("email", "first_name", "last_name", "is_staff")
+    list_display = ("email", "first_name", "last_name", "score", "is_staff")
     search_fields = ("first_name", "last_name", "email")
     ordering = ("email",)
 
