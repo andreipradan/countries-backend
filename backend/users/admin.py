@@ -9,6 +9,7 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name")}),
+        ("Countries", {"fields": ("score",)}),
         (
             "Telegram",
             {

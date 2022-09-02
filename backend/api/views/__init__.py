@@ -1,3 +1,2 @@
-from .auth import APILogin
-from .auth import Register
-from .users import UserList
+from .auth import APILogin, Register
+from .users import UserList, UserDetail

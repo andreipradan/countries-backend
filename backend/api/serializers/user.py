@@ -23,7 +23,15 @@ class UserSerializer(ModelSerializer):
         write_only=True,
     )
 
+    def validate_score(self, value):
+        if self.instance and value <= self.instance.score:
+            return self.instance.score
+        return value
+
     def validate(self, data):
+        if self.instance:
+            return super().validate(data)
+
         password2 = data.pop("password2")
         if data["password"] != password2:
             raise serializers.ValidationError("passwords must match")
