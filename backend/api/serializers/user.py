@@ -8,19 +8,8 @@ from users.models import User
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "date_joined",
-            "email",
-            "first_name",
-            "full_name",
-            "last_login",
-            "last_name",
-            "password",
-            "password2",
-            "telegram_id",
-            "telegram_notifications_active",
-            "telegram_notifications_silent",
-        )
+        fields = "__all__"
+
     password = serializers.CharField(
         required=True,
         style={"input_type": "password"},

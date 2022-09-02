@@ -31,9 +31,11 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
+    score = models.IntegerField(default=0)
     telegram_id = models.CharField(max_length=32, blank=True, null=True)
     telegram_notifications_active = models.BooleanField(default=False)
     telegram_notifications_silent = models.BooleanField(default=False)
+
     username = None
     objects = UserManager()
 
