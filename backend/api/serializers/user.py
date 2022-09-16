@@ -2,7 +2,19 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from users.models import User
+from users.models import User, Score
+
+
+class ScoreSerializer(ModelSerializer):
+    class Meta:
+        model = Score
+        exclude = "user",
+
+    def validate(self, attrs):
+        if attrs.get("user") or attrs.get("user_id"):
+            raise serializers.ValidationError("User is not allowed in payload")
+        attrs["user_id"] = self.context['request'].parser_context['kwargs']['pk']
+        return super().validate(attrs)
 
 
 class UserSerializer(ModelSerializer):
@@ -22,11 +34,7 @@ class UserSerializer(ModelSerializer):
         trim_whitespace=False,
         write_only=True,
     )
-
-    def validate_score(self, value):
-        if self.instance and value <= self.instance.score:
-            return self.instance.score
-        return value
+    scores = ScoreSerializer(many=True)
 
     def validate(self, data):
         if self.instance:

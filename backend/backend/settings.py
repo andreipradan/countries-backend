@@ -32,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['.pradan.dev'] + os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = ['.pradan.dev'] + env.list("ALLOWED_HOSTS", default=[])
 
 
 # Application definition

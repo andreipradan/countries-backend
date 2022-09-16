@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -31,7 +32,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
-    score = models.IntegerField(default=0)
     telegram_id = models.CharField(max_length=32, blank=True, null=True)
     telegram_notifications_active = models.BooleanField(default=False)
     telegram_notifications_silent = models.BooleanField(default=False)
@@ -48,3 +48,27 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.full_name
+
+
+class Score(models.Model):
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='scores'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    score = models.IntegerField(default=0)
+    game_type = models.IntegerField(
+        choices=(
+            (1, "World"),
+            (2, "North America"),
+            (3, "South America"),
+            (4, "Europe"),
+            (5, "Africa"),
+            (6, "Asia"),
+            (7, "Oceania"),
+        ),
+        default=1,
+    )
