@@ -14,9 +14,13 @@ import os
 from pathlib import Path
 
 
+import environ
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+env = environ.Env(
+    DEBUG=(bool, False)  # set casting, default value
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,11 +29,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ["SECRET_KEY"]
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.getenv("DEBUG") == "True" else False
+SECRET_KEY = env("SECRET_KEY")
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['.pradan.dev'] + os.getenv("ALLOWED_HOSTS", "").split(",")
 
@@ -86,15 +87,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'country-guesser',
-        'CLIENT': {
-            'host': os.environ['MONGO_HOST']
-        }
-    }
-}
+DATABASES = {'default': env.db("POSTGRES_URL")}
+DATABASES['default']['CONN_MAX_AGE'] = 60
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -141,7 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
     sentry_sdk.init(
-        dsn=os.environ["SENTRY_DSN"],
+        dsn=env("SENTRY_DSN"),
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
     )
@@ -155,11 +149,6 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = [
-    "https://countries.pradan.dev",
-]
-CORS_ORIGIN_WHITELIST_ENV = os.getenv("CORS_ORIGIN_WHITELIST")
-if CORS_ORIGIN_WHITELIST_ENV:
-    CORS_ORIGIN_WHITELIST += CORS_ORIGIN_WHITELIST_ENV.split(',')
-
+CORS_ORIGIN_WHITELIST = ["https://countries.pradan.dev"]
+CORS_ORIGIN_WHITELIST += env.list("CORS_ORIGIN_WHITELIST", default=[])
 CSRF_TRUSTED_ORIGINS = ['https://*.pradan.dev']
