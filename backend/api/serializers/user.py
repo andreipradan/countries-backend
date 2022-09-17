@@ -5,22 +5,10 @@ from rest_framework.serializers import ModelSerializer
 from users.models import User, Score
 
 
-class ScoreSerializer(ModelSerializer):
-    class Meta:
-        model = Score
-        exclude = "user",
-
-    def validate(self, attrs):
-        if attrs.get("user") or attrs.get("user_id"):
-            raise serializers.ValidationError("User is not allowed in payload")
-        attrs["user_id"] = self.context['request'].parser_context['kwargs']['pk']
-        return super().validate(attrs)
-
-
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = "id", "email", "first_name", "last_name", "password", "password2"
 
     password = serializers.CharField(
         required=True,
@@ -34,7 +22,6 @@ class UserSerializer(ModelSerializer):
         trim_whitespace=False,
         write_only=True,
     )
-    scores = ScoreSerializer(many=True)
 
     def validate(self, data):
         if self.instance:
@@ -60,3 +47,12 @@ class UserSerializer(ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class ScoreSerializer(ModelSerializer):
+    class Meta:
+        model = Score
+        fields = "__all__"
+
+    user = UserSerializer(read_only=True)
+    user_id = serializers.IntegerField()

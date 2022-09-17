@@ -1,19 +1,9 @@
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView
+from rest_framework.generics import ListCreateAPIView
 
-from api.serializers import UserSerializer
 from api.serializers.user import ScoreSerializer
-from users.models import User
+from users.models import Score
 
 
-class UserList(ListAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.prefetch_related("scores")
-
-
-class UserDetail(RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.prefetch_related("scores")
-
-
-class UserScore(CreateAPIView):
+class ScoreList(ListCreateAPIView):
     serializer_class = ScoreSerializer
+    queryset = Score.objects.prefetch_related("user")

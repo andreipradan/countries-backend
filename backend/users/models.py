@@ -51,6 +51,9 @@ class User(AbstractUser):
 
 
 class Score(models.Model):
+    class Meta:
+        ordering = "game_type", "-score", "duration"
+
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -60,6 +63,7 @@ class Score(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     score = models.IntegerField(default=0)
+    duration = models.IntegerField(default=0)
     game_type = models.IntegerField(
         choices=(
             (1, "World"),
