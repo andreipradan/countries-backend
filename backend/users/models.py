@@ -52,7 +52,7 @@ class User(AbstractUser):
 
 class Score(models.Model):
     class Meta:
-        ordering = "game_type", "-score", "duration"
+        ordering = "game_type", "game_sub_type", "-score", "duration"
 
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
@@ -65,6 +65,13 @@ class Score(models.Model):
     score = models.IntegerField(default=0)
     duration = models.IntegerField(default=0)
     game_type = models.IntegerField(
+        choices=(
+            (1, "Random Map"),
+            (2, "Free Guessing"),
+        ),
+        default=1,
+    )
+    game_sub_type = models.IntegerField(
         choices=(
             (1, "World"),
             (2, "North America"),
