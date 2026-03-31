@@ -32,6 +32,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
+    is_active = models.BooleanField(default=False)
     telegram_id = models.CharField(max_length=32, blank=True, null=True)
     telegram_notifications_active = models.BooleanField(default=False)
     telegram_notifications_silent = models.BooleanField(default=False)

@@ -24,15 +24,18 @@ env = environ.Env(
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
+TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")
+
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['.pradan.dev'] + env.list("ALLOWED_HOSTS", default=[])
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"] + env.list("ALLOWED_HOSTS", default=[])
 
 
 # Application definition
@@ -108,6 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 AUTH_USER_MODEL = "users.User"
+AUTHENTICATION_BACKENDS = [
+    "auth.authentication.EmailBackend",
+]
 
 
 # Internationalization
@@ -125,7 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'https://storage.googleapis.com/api-countries-pradan-dev/static/'
+STATIC_URL = env("STATIC_URL", default="/static/")
 STATIC_ROOT = 'static'
 
 # Default primary key field type
@@ -149,6 +155,6 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ["https://countries.pradan.dev"]
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 CORS_ORIGIN_WHITELIST += env.list("CORS_ORIGIN_WHITELIST", default=[])
-CSRF_TRUSTED_ORIGINS = ['https://*.pradan.dev']
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"] + env.list("CSRF_TRUSTED_ORIGINS", default=[])

@@ -1,7 +1,11 @@
+import asyncio
+
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+
+from api.clients import send_telegram_message
 from users.models import User, Score
 
 
@@ -46,6 +50,9 @@ class UserSerializer(ModelSerializer):
         user = super().create(validated_data)
         user.set_password(validated_data["password"])
         user.save()
+        asyncio.run(
+            send_telegram_message(f"[Countries] New user registered: {user.email}")
+        )
         return user
 
 
